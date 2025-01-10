@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/service/athena"
 	"github.com/prestodb/presto-go-client/presto"
 )
 
@@ -20,8 +22,10 @@ type stmtAthena struct {
 }
 
 func (s *stmtAthena) Close() error {
-	query := fmt.Sprintf("DEALLOCATE PREPARE %s", s.prepareKey)
-	_, err := s.conn.startQuery(query)
+	_, err := s.conn.athena.DeletePreparedStatement(&athena.DeletePreparedStatementInput{
+		StatementName: aws.String(s.prepareKey),
+		WorkGroup:     aws.String(s.conn.workgroup),
+	})
 	return err
 }
 

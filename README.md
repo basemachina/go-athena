@@ -1,3 +1,13 @@
+**This is forked from [speee/go-athena](https://github.com/speee/go-athena).**
+
+The following are the main changes that have been made:
+
+## Changes
+
+- Use Amazon Athena SDK functions for prepared statements instead of using SQL queries.
+
+---
+
 [![](https://godoc.org/github.com/speee/go-athena?status.svg)](https://godoc.org/github.com/speee/go-athena)
 
 **This is forked from [segmentio/go-athena](https://github.com/segmentio/go-athena) and we described what changes we added [here](./doc/introduction.md).**
@@ -9,7 +19,7 @@ go-athena is a simple Golang [database/sql] driver for [Amazon Athena](https://a
 ```go
 import (
     "database/sql"
-    _ "github.com/speee/go-athena"
+    _ "github.com/basemachina/go-athena"
 )
 
 func main() {

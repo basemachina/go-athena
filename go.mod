@@ -1,4 +1,4 @@
-module github.com/speee/go-athena
+module github.com/basemachina/go-athena
 
 go 1.14
 
