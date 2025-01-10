@@ -19,7 +19,7 @@ go-athena is a simple Golang [database/sql] driver for [Amazon Athena](https://a
 ```go
 import (
     "database/sql"
-    _ "github.com/speee/go-athena"
+    _ "github.com/basemachina/go-athena"
 )
 
 func main() {
