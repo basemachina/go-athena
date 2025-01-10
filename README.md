@@ -1,5 +1,11 @@
 **This is forked from [speee/go-athena](https://github.com/speee/go-athena).**
 
+The following are the main changes that have been made:
+
+## Changes
+
+- Use Amazon Athena SDK functions for prepared statements instead of using SQL queries.
+
 ---
 
 [![](https://godoc.org/github.com/speee/go-athena?status.svg)](https://godoc.org/github.com/speee/go-athena)
