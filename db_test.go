@@ -203,7 +203,7 @@ func TestPrepare(t *testing.T) {
 	tests := []struct {
 		name      string
 		sql       string
-		params    []interface{}
+		params    []any
 		startFunc func(ctx context.Context) context.Context
 		endFunc   func(ctx context.Context) context.Context
 		want      dummyRow
@@ -211,31 +211,31 @@ func TestPrepare(t *testing.T) {
 		{
 			name:   "NoInput",
 			sql:    fmt.Sprintf("select * from %s order by intType limit 1", harness.table),
-			params: []interface{}{},
+			params: []any{},
 			want:   data[0],
 		},
 		{
 			name:   "IntType",
 			sql:    fmt.Sprintf("select * from %s where intType = ?", harness.table),
-			params: []interface{}{data[0].IntType},
+			params: []any{data[0].IntType},
 			want:   data[0],
 		},
 		{
 			name:   "StringType",
 			sql:    fmt.Sprintf("select * from %s where stringType = ?", harness.table),
-			params: []interface{}{data[0].StringType},
+			params: []any{data[0].StringType},
 			want:   data[0],
 		},
 		{
 			name:   "FloatType",
 			sql:    fmt.Sprintf("select * from %s where floattype = ?", harness.table),
-			params: []interface{}{data[0].FloatType},
+			params: []any{data[0].FloatType},
 			want:   data[0],
 		},
 		{
 			name:   "DoubleType",
 			sql:    fmt.Sprintf("select * from %s where doubletype = ?", harness.table),
-			params: []interface{}{data[0].DoubleType},
+			params: []any{data[0].DoubleType},
 			want:   data[0],
 		},
 	}
@@ -460,13 +460,13 @@ func (a *athenaHarness) teardown() {
 	a.mustExec("drop table %s", a.table)
 }
 
-func (a *athenaHarness) mustExec(sql string, args ...interface{}) {
+func (a *athenaHarness) mustExec(sql string, args ...any) {
 	query := fmt.Sprintf(sql, args...)
 	_, err := a.db.ExecContext(context.TODO(), query)
 	require.NoError(a.t, err, query)
 }
 
-func (a *athenaHarness) mustQuery(ctx context.Context, sql string, args ...interface{}) *sql.Rows {
+func (a *athenaHarness) mustQuery(ctx context.Context, sql string, args ...any) *sql.Rows {
 	query := fmt.Sprintf(sql, args...)
 	rows, err := a.db.QueryContext(ctx, query)
 	require.NoError(a.t, err, query)
