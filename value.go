@@ -84,7 +84,7 @@ func convertValue(athenaType string, rawValue *string) (any, error) {
 	switch athenaType {
 	case "smallint":
 		return strconv.ParseInt(val, 10, 16)
-	case "integer", "int":
+	case "integer":
 		return strconv.ParseInt(val, 10, 32)
 	case "bigint":
 		return strconv.ParseInt(val, 10, 64)
@@ -100,7 +100,7 @@ func convertValue(athenaType string, rawValue *string) (any, error) {
 		return strconv.ParseFloat(val, 32)
 	case "double", "decimal":
 		return strconv.ParseFloat(val, 64)
-	case "varchar", "string":
+	case "varchar":
 		return val, nil
 	case "timestamp":
 		return time.Parse(TimestampLayout, val)
