@@ -1,9 +1,10 @@
 package athena
 
 import (
-	"reflect"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestConvertValue(t *testing.T) {
@@ -28,6 +29,11 @@ func TestConvertValue(t *testing.T) {
 			athenaType: "integer",
 			rawValue:   nil,
 			want:       nil,
+		},
+		"tinyint": {
+			athenaType: "tinyint",
+			rawValue:   toPtr("123"),
+			want:       int8(123),
 		},
 		"smallint": {
 			athenaType: "smallint",
@@ -97,7 +103,6 @@ func TestConvertValue(t *testing.T) {
 	}
 
 	for name, tc := range tests {
-		tc := tc
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 
@@ -107,9 +112,7 @@ func TestConvertValue(t *testing.T) {
 				return
 			}
 
-			if !reflect.DeepEqual(got, tc.want) {
-				t.Errorf("got: %v, want: %v", got, tc.want)
-			}
+			assert.Equal(t, got, tc.want)
 		})
 	}
 }
