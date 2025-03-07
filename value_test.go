@@ -33,7 +33,7 @@ func TestConvertValue(t *testing.T) {
 		"tinyint": {
 			athenaType: "tinyint",
 			rawValue:   toPtr("123"),
-			want:       int8(123),
+			want:       int64(123),
 		},
 		"smallint": {
 			athenaType: "smallint",
