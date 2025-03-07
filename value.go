@@ -4,7 +4,6 @@ import (
 	"database/sql/driver"
 	"fmt"
 	"strconv"
-	"time"
 
 	"github.com/aws/aws-sdk-go/service/athena"
 )
@@ -102,14 +101,8 @@ func convertValue(athenaType string, rawValue *string) (any, error) {
 		return strconv.ParseFloat(val, 32)
 	case "double", "decimal":
 		return strconv.ParseFloat(val, 64)
-	case "varchar":
+	case "varchar", "timestamp", "timestamp with time zone", "date":
 		return val, nil
-	case "timestamp":
-		return time.Parse(TimestampLayout, val)
-	case "timestamp with time zone":
-		return time.Parse(TimestampWithTimeZoneLayout, val)
-	case "date":
-		return time.Parse(DateLayout, val)
 	default:
 		return []byte(val), nil
 	}
