@@ -2,7 +2,6 @@ package athena
 
 import (
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -10,14 +9,6 @@ import (
 func TestConvertValue(t *testing.T) {
 	toPtr := func(s string) *string {
 		return &s
-	}
-
-	parseTime := func(t *testing.T, layout, value string) time.Time {
-		parsed, err := time.Parse(layout, value)
-		if err != nil {
-			t.Fatal(err)
-		}
-		return parsed
 	}
 
 	tests := map[string]struct {
@@ -83,17 +74,17 @@ func TestConvertValue(t *testing.T) {
 		"timestamp": {
 			athenaType: "timestamp",
 			rawValue:   toPtr("2023-01-15 12:34:56.789"),
-			want:       parseTime(t, TimestampLayout, "2023-01-15 12:34:56.789"),
+			want:       "2023-01-15 12:34:56.789",
 		},
 		"timestamp with time zone": {
 			athenaType: "timestamp with time zone",
 			rawValue:   toPtr("2023-01-15 12:34:56.789 JST"),
-			want:       parseTime(t, TimestampWithTimeZoneLayout, "2023-01-15 12:34:56.789 JST"),
+			want:       "2023-01-15 12:34:56.789 JST",
 		},
 		"date": {
 			athenaType: "date",
 			rawValue:   toPtr("2023-01-15"),
-			want:       parseTime(t, DateLayout, "2023-01-15"),
+			want:       "2023-01-15",
 		},
 		"unknown type": {
 			athenaType: "unknown",
