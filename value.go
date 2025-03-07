@@ -33,7 +33,7 @@ func convertRow(columns []*athena.ColumnInfo, in []*athena.Datum, ret []driver.V
 
 func convertRowFromTableInfo(columns []*athena.Column, in []string, ret []driver.Value) error {
 	for i, val := range in {
-		var coerced interface{}
+		var coerced any
 		var err error
 		if val == nullStringResultModeGzipDL {
 			var nullVal *string
@@ -53,7 +53,7 @@ func convertRowFromTableInfo(columns []*athena.Column, in []string, ret []driver
 
 func convertRowFromCsv(columns []*athena.ColumnInfo, in []downloadField, ret []driver.Value) error {
 	for i, df := range in {
-		var coerced interface{}
+		var coerced any
 		var err error
 		if df.isNil {
 			var nullVal *string
@@ -71,7 +71,7 @@ func convertRowFromCsv(columns []*athena.ColumnInfo, in []downloadField, ret []d
 	return nil
 }
 
-func convertValue(athenaType string, rawValue *string) (interface{}, error) {
+func convertValue(athenaType string, rawValue *string) (any, error) {
 	if rawValue == nil {
 		return nil, nil
 	}
