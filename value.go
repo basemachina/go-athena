@@ -101,7 +101,10 @@ func convertValue(athenaType string, rawValue *string) (any, error) {
 		return strconv.ParseFloat(val, 32)
 	case "double", "decimal":
 		return strconv.ParseFloat(val, 64)
-	case "varchar", "timestamp", "timestamp with time zone", "date":
+	case "varchar",
+		"timestamp", "timestamp with time zone",
+		"date",
+		"time", "time with time zone":
 		return val, nil
 	default:
 		return []byte(val), nil
