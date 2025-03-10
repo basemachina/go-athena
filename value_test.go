@@ -86,6 +86,16 @@ func TestConvertValue(t *testing.T) {
 			rawValue:   toPtr("2023-01-15"),
 			want:       "2023-01-15",
 		},
+		"time": {
+			athenaType: "time",
+			rawValue:   toPtr("12:34:56"),
+			want:       "12:34:56",
+		},
+		"time with time zone": {
+			athenaType: "time with time zone",
+			rawValue:   toPtr("12:34:56 JST"),
+			want:       "12:34:56 JST",
+		},
 		"unknown type": {
 			athenaType: "unknown",
 			rawValue:   toPtr("unknown"),
