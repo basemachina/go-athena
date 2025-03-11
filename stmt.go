@@ -9,7 +9,7 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/athena"
-	"github.com/prestodb/presto-go-client/presto"
+	"github.com/trinodb/trino-go-client/trino"
 )
 
 type stmtAthena struct {
@@ -166,5 +166,5 @@ func serial(ctx context.Context, v any) (string, error) {
 		return strconv.FormatFloat(x, 'g', -1, 64), nil
 	}
 
-	return presto.Serial(v)
+	return trino.Serial(v)
 }
