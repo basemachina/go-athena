@@ -7,7 +7,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/prestodb/presto-go-client/presto"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/athena"
+	"github.com/trinodb/trino-go-client/trino"
 )
 
 type stmtAthena struct {
@@ -20,9 +22,11 @@ type stmtAthena struct {
 }
 
 func (s *stmtAthena) Close() error {
-	query := fmt.Sprintf("DEALLOCATE PREPARE %s", s.prepareKey)
 	ctx := context.Background()
-	_, err := s.conn.startQuery(ctx, query)
+	_, err := s.conn.athena.DeletePreparedStatement(ctx, &athena.DeletePreparedStatementInput{
+		StatementName: aws.String(s.prepareKey),
+		WorkGroup:     aws.String(s.conn.workgroup),
+	})
 	return err
 }
 
@@ -31,7 +35,7 @@ func (s *stmtAthena) NumInput() int {
 }
 
 func (s *stmtAthena) Exec(args []driver.Value) (driver.Result, error) {
-	values := make([]interface{}, 0, len(args))
+	values := make([]any, 0, len(args))
 	for _, val := range args {
 		values = append(values, val)
 	}
@@ -47,7 +51,7 @@ func (s *stmtAthena) Exec(args []driver.Value) (driver.Result, error) {
 }
 
 func (s *stmtAthena) Query(args []driver.Value) (driver.Rows, error) {
-	values := make([]interface{}, 0, len(args))
+	values := make([]any, 0, len(args))
 	for _, val := range args {
 		values = append(values, val)
 	}
@@ -62,7 +66,7 @@ func (s *stmtAthena) Query(args []driver.Value) (driver.Rows, error) {
 }
 
 func (s *stmtAthena) ExecContext(ctx context.Context, args []driver.NamedValue) (driver.Result, error) {
-	values := make([]interface{}, 0, len(args))
+	values := make([]any, 0, len(args))
 	for _, val := range args {
 		values = append(values, val.Value)
 	}
@@ -76,7 +80,7 @@ func (s *stmtAthena) ExecContext(ctx context.Context, args []driver.NamedValue) 
 }
 
 func (s *stmtAthena) QueryContext(ctx context.Context, args []driver.NamedValue) (driver.Rows, error) {
-	values := make([]interface{}, 0, len(args))
+	values := make([]any, 0, len(args))
 	for _, val := range args {
 		values = append(values, val.Value)
 	}
@@ -88,7 +92,7 @@ func (s *stmtAthena) QueryContext(ctx context.Context, args []driver.NamedValue)
 	return s.runQuery(ctx, query)
 }
 
-func (s *stmtAthena) makeQuery(ctx context.Context, args []interface{}) (string, error) {
+func (s *stmtAthena) makeQuery(ctx context.Context, args []any) (string, error) {
 	params := make([]string, 0, len(args))
 	for _, arg := range args {
 		var param string
@@ -155,7 +159,7 @@ func (s *stmtAthena) runQuery(ctx context.Context, query string) (driver.Rows, e
 	})
 }
 
-func serial(ctx context.Context, v interface{}) (string, error) {
+func serial(ctx context.Context, v any) (string, error) {
 	switch x := v.(type) {
 	case float32:
 		return strconv.FormatFloat(float64(x), 'g', -1, 32), nil
@@ -163,5 +167,5 @@ func serial(ctx context.Context, v interface{}) (string, error) {
 		return strconv.FormatFloat(x, 'g', -1, 64), nil
 	}
 
-	return presto.Serial(v)
+	return trino.Serial(v)
 }

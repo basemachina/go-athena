@@ -1,15 +1,15 @@
-module github.com/speee/go-athena
+module github.com/basemachina/go-athena
 
-go 1.18
+go 1.24.0
 
 require (
 	github.com/aws/aws-sdk-go-v2 v1.26.0
 	github.com/aws/aws-sdk-go-v2/config v1.27.7
 	github.com/aws/aws-sdk-go-v2/service/athena v1.40.2
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.51.4
-	github.com/prestodb/presto-go-client v0.0.0-20201204133205-8958eb37e584
 	github.com/satori/go.uuid v1.2.0
-	github.com/stretchr/testify v1.7.0
+	github.com/stretchr/testify v1.9.0
+	github.com/trinodb/trino-go-client v0.321.0
 )
 
 require (
@@ -29,13 +29,15 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sts v1.28.4 // indirect
 	github.com/aws/smithy-go v1.20.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/hashicorp/go-uuid v1.0.2 // indirect
-	github.com/jcmturner/gofork v1.0.0 // indirect
+	github.com/hashicorp/go-uuid v1.0.3 // indirect
+	github.com/jcmturner/aescts/v2 v2.0.0 // indirect
+	github.com/jcmturner/dnsutils/v2 v2.0.0 // indirect
+	github.com/jcmturner/gofork v1.7.6 // indirect
+	github.com/jcmturner/goidentity/v6 v6.0.1 // indirect
+	github.com/jcmturner/gokrb5/v8 v8.4.4 // indirect
+	github.com/jcmturner/rpc/v2 v2.0.3 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	golang.org/x/crypto v0.0.0-20200221231518-2aa609cf4a9d // indirect
-	gopkg.in/jcmturner/aescts.v1 v1.0.1 // indirect
-	gopkg.in/jcmturner/dnsutils.v1 v1.0.1 // indirect
-	gopkg.in/jcmturner/gokrb5.v6 v6.1.1 // indirect
-	gopkg.in/jcmturner/rpc.v1 v1.1.0 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
+	golang.org/x/crypto v0.36.0 // indirect
+	golang.org/x/net v0.33.0 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

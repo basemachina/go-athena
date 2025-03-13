@@ -275,14 +275,12 @@ func (c *conn) prepareContext(ctx context.Context, query string) (driver.Stmt, e
 
 	// prepare
 	prepareKey := fmt.Sprintf("tmp_prepare_%v", strings.Replace(uuid.NewV4().String(), "-", "", -1))
-	newQuery := fmt.Sprintf("PREPARE %s FROM %s", prepareKey, query)
-
-	queryID, err := c.startQuery(ctx, newQuery)
+	_, err := c.athena.CreatePreparedStatement(ctx, &athena.CreatePreparedStatementInput{
+		StatementName:  aws.String(prepareKey),
+		WorkGroup:      aws.String(c.workgroup),
+		QueryStatement: aws.String(query),
+	})
 	if err != nil {
-		return nil, err
-	}
-
-	if err := c.waitOnQuery(ctx, queryID); err != nil {
 		return nil, err
 	}
 

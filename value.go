@@ -4,7 +4,6 @@ import (
 	"database/sql/driver"
 	"fmt"
 	"strconv"
-	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/athena/types"
 )
@@ -33,7 +32,7 @@ func convertRow(columns []types.ColumnInfo, in []types.Datum, ret []driver.Value
 
 func convertRowFromTableInfo(columns []types.Column, in []string, ret []driver.Value) error {
 	for i, val := range in {
-		var coerced interface{}
+		var coerced any
 		var err error
 		if val == nullStringResultModeGzipDL {
 			var nullVal *string
@@ -53,7 +52,7 @@ func convertRowFromTableInfo(columns []types.Column, in []string, ret []driver.V
 
 func convertRowFromCsv(columns []types.ColumnInfo, in []downloadField, ret []driver.Value) error {
 	for i, df := range in {
-		var coerced interface{}
+		var coerced any
 		var err error
 		if df.isNil {
 			var nullVal *string
@@ -71,7 +70,7 @@ func convertRowFromCsv(columns []types.ColumnInfo, in []downloadField, ret []dri
 	return nil
 }
 
-func convertValue(athenaType string, rawValue *string) (interface{}, error) {
+func convertValue(athenaType string, rawValue *string) (any, error) {
 	if rawValue == nil {
 		return nil, nil
 	}
@@ -82,9 +81,11 @@ func convertValue(athenaType string, rawValue *string) (interface{}, error) {
 
 	val := *rawValue
 	switch athenaType {
+	case "tinyint":
+		return strconv.ParseInt(val, 10, 8)
 	case "smallint":
 		return strconv.ParseInt(val, 10, 16)
-	case "integer", "int":
+	case "integer":
 		return strconv.ParseInt(val, 10, 32)
 	case "bigint":
 		return strconv.ParseInt(val, 10, 64)
@@ -100,15 +101,12 @@ func convertValue(athenaType string, rawValue *string) (interface{}, error) {
 		return strconv.ParseFloat(val, 32)
 	case "double", "decimal":
 		return strconv.ParseFloat(val, 64)
-	case "varchar", "string":
+	case "varchar",
+		"timestamp", "timestamp with time zone",
+		"date",
+		"time", "time with time zone":
 		return val, nil
-	case "timestamp":
-		return time.Parse(TimestampLayout, val)
-	case "timestamp with time zone":
-		return time.Parse(TimestampWithTimeZoneLayout, val)
-	case "date":
-		return time.Parse(DateLayout, val)
 	default:
-		panic(fmt.Errorf("unknown type `%s` with value %s", athenaType, val))
+		return []byte(val), nil
 	}
 }
