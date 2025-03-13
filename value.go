@@ -2,6 +2,7 @@ package athena
 
 import (
 	"database/sql/driver"
+	"encoding/json"
 	"fmt"
 	"strconv"
 
@@ -106,6 +107,13 @@ func convertValue(athenaType string, rawValue *string) (any, error) {
 		"date",
 		"time", "time with time zone":
 		return val, nil
+	case "array":
+		// Child element type is assumed to be any, because types.ColumnInfo does not contain the child element type.
+		var array []any
+		if err := json.Unmarshal([]byte(val), &array); err != nil {
+			return nil, err
+		}
+		return array, nil
 	default:
 		return []byte(val), nil
 	}

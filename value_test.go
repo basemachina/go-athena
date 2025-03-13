@@ -101,6 +101,16 @@ func TestConvertValue(t *testing.T) {
 			rawValue:   toPtr("unknown"),
 			want:       []byte("unknown"),
 		},
+		"array varchar": {
+			athenaType: "array",
+			rawValue:   toPtr("[\"a\",\"b\",\"c\"]"),
+			want:       []any{"a", "b", "c"},
+		},
+		"array integer": {
+			athenaType: "array",
+			rawValue:   toPtr("[1,2,3]"),
+			want:       []any{float64(1), float64(2), float64(3)},
+		},
 	}
 
 	for name, tc := range tests {
