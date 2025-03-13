@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/athena"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/athena"
 	"github.com/trinodb/trino-go-client/trino"
 )
 
@@ -22,7 +22,8 @@ type stmtAthena struct {
 }
 
 func (s *stmtAthena) Close() error {
-	_, err := s.conn.athena.DeletePreparedStatement(&athena.DeletePreparedStatementInput{
+	ctx := context.Background()
+	_, err := s.conn.athena.DeletePreparedStatement(ctx, &athena.DeletePreparedStatementInput{
 		StatementName: aws.String(s.prepareKey),
 		WorkGroup:     aws.String(s.conn.workgroup),
 	})
@@ -134,7 +135,7 @@ func (s *stmtAthena) runQuery(ctx context.Context, query string) (driver.Rows, e
 		}
 	}
 
-	queryID, err := s.conn.startQuery(query)
+	queryID, err := s.conn.startQuery(ctx, query)
 	if err != nil {
 		return nil, err
 	}
@@ -148,7 +149,7 @@ func (s *stmtAthena) runQuery(ctx context.Context, query string) (driver.Rows, e
 		QueryID:        queryID,
 		SkipHeader:     !isDDLQuery(query),
 		ResultMode:     s.resultMode,
-		Session:        s.conn.session,
+		Config:         s.conn.config,
 		OutputLocation: s.conn.OutputLocation,
 		Timeout:        timeout,
 		AfterDownload:  s.afterDownload,
