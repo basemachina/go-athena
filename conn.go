@@ -198,10 +198,10 @@ func (c *conn) startQuery(ctx context.Context, query string) (string, error) {
 }
 
 func newBackoff(pollMode PollMode, pollFrequency time.Duration) backoff.BackOff {
-	if pollMode == PollModeConstant {
-		return backoff.NewConstantBackOff(pollFrequency)
+	if pollMode == PollModeExponential {
+		return backoff.NewExponentialBackOff()
 	}
-	return backoff.NewExponentialBackOff()
+	return backoff.NewConstantBackOff(pollFrequency)
 }
 
 // waitOnQuery blocks until a query finishes, returning an error if it failed.
