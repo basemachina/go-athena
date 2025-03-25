@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/cenkalti/backoff/v5"
 	uuid "github.com/satori/go.uuid"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -68,6 +69,7 @@ type conn struct {
 	OutputLocation string
 	workgroup      string
 
+	pollMode      PollMode
 	pollFrequency time.Duration
 
 	resultMode ResultMode
@@ -195,8 +197,16 @@ func (c *conn) startQuery(ctx context.Context, query string) (string, error) {
 	return *resp.QueryExecutionId, nil
 }
 
+func newBackoff(pollMode PollMode, pollFrequency time.Duration) backoff.BackOff {
+	if pollMode == PollModeConstant {
+		return backoff.NewConstantBackOff(pollFrequency)
+	}
+	return backoff.NewExponentialBackOff()
+}
+
 // waitOnQuery blocks until a query finishes, returning an error if it failed.
 func (c *conn) waitOnQuery(ctx context.Context, queryID string) error {
+	backoff := newBackoff(c.pollMode, c.pollFrequency)
 	for {
 		statusResp, err := c.athena.GetQueryExecution(ctx, &athena.GetQueryExecutionInput{
 			QueryExecutionId: aws.String(queryID),
@@ -224,7 +234,7 @@ func (c *conn) waitOnQuery(ctx context.Context, queryID string) error {
 			})
 
 			return ctx.Err()
-		case <-time.After(c.pollFrequency):
+		case <-time.After(backoff.NextBackOff()):
 			continue
 		}
 	}

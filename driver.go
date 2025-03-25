@@ -66,6 +66,10 @@ func init() {
 // "s3://bucket/and/so/forth". In the AWS UI, this defaults to
 // "s3://aws-athena-query-results-<ACCOUNTID>-<REGION>", but the driver requires it.
 //
+// - `poll_mode` (optional)
+// The mode of polling for query results. It should be one of "constant" or "exponential".
+// This defaults to "constant".
+//
 // - `poll_frequency` (optional)
 // Athena's API requires polling to retrieve query results. This is the frequency at
 // which the driver will poll for results. It should be a time/Duration.String().
@@ -110,6 +114,7 @@ func (d *Driver) Open(connStr string) (driver.Conn, error) {
 		athena:         athenaClient,
 		db:             cfg.Database,
 		OutputLocation: cfg.OutputLocation,
+		pollMode:       cfg.PollMode,
 		pollFrequency:  cfg.PollFrequency,
 		workgroup:      cfg.WorkGroup,
 		resultMode:     cfg.ResultMode,
@@ -154,6 +159,8 @@ type Config struct {
 	OutputLocation string
 	WorkGroup      string
 
+	PollMode PollMode
+	// PollFrequency specifies how often query results are polled. It is used when PollMode is set to PollModeConstant.
 	PollFrequency time.Duration
 
 	ResultMode ResultMode
@@ -193,6 +200,14 @@ func configFromConnectionString(connStr string) (*Config, error) {
 	cfg.WorkGroup = args.Get("workgroup")
 	if cfg.WorkGroup == "" {
 		cfg.WorkGroup = "primary"
+	}
+
+	pollModeStr := args.Get("poll_mode")
+	switch pollModeStr {
+	case "constant":
+		cfg.PollMode = PollModeConstant
+	case "exponential":
+		cfg.PollMode = PollModeExponential
 	}
 
 	frequencyStr := args.Get("poll_frequency")
