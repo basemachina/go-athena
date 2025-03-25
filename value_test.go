@@ -96,6 +96,21 @@ func TestConvertValue(t *testing.T) {
 			rawValue:   toPtr("12:34:56 JST"),
 			want:       "12:34:56 JST",
 		},
+		"array": {
+			athenaType: "array",
+			rawValue:   toPtr("[one, two, three]"),
+			want:       "[one, two, three]",
+		},
+		"map": {
+			athenaType: "map",
+			rawValue:   toPtr("{one=1, two=2, three=3}"),
+			want:       "{one=1, two=2, three=3}",
+		},
+		"row": {
+			athenaType: "row",
+			rawValue:   toPtr("{one, two, three}"),
+			want:       "{one, two, three}",
+		},
 		"unknown type": {
 			athenaType: "unknown",
 			rawValue:   toPtr("unknown"),

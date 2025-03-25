@@ -104,7 +104,8 @@ func convertValue(athenaType string, rawValue *string) (any, error) {
 	case "varchar",
 		"timestamp", "timestamp with time zone",
 		"date",
-		"time", "time with time zone":
+		"time", "time with time zone",
+		"array", "map", "row":
 		return val, nil
 	default:
 		return []byte(val), nil
