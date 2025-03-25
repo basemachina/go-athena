@@ -7,6 +7,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/config v1.29.9
 	github.com/aws/aws-sdk-go-v2/service/athena v1.50.1
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.78.2
+	github.com/cenkalti/backoff/v5 v5.0.2
 	github.com/satori/go.uuid v1.2.0
 	github.com/stretchr/testify v1.10.0
 	github.com/trinodb/trino-go-client v0.321.0
